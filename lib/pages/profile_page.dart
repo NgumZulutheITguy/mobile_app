@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/components/calcButtons.dart';
+import 'package:mobile_app/components/mapPage.dart';
+
 
 import '../components/text_box.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  ProfilePage({Key? key}) : super(key: key);
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -74,69 +76,88 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         backgroundColor: Colors.black,
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("users")
-            .doc(currentUser.email)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final userData = snapshot.data!.data() as Map<String, dynamic>?;
-
-            // Provide default values for the fields in case they are null
-            final username = userData?['username'] ?? currentUser.email;
-            
-
-            return ListView(
-              children: [
-                const SizedBox(height: 35),
-                // Profile pic
-                const Icon(
-                  Icons.person,
-                  size: 80,
-                  color: Colors.orange,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                // User email
-                Text(
-                  currentUser.email ?? 'Email not available',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.orange),
-                ),
-                // User details
-                const SizedBox(
-                  height: 20,
-                ),
-
-                const Padding(
-                  padding: EdgeInsets.only(left: 25.0),
-                  child: Text(
-                    'My Details',
-                    style: TextStyle(color: Colors.orange),
-                  ),
-                ),
-                // Username
-                MyTextBox(
-                  text: username,
-                  sectionName: 'Username',
-                  onPressed: () => editField('username'),
-                ),
-                // Role
-               
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error ${snapshot.error}'),
-            );
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(currentUser.email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final userData = snapshot.data!.data() as Map<String, dynamic>?;
+      
+                  // Provide default values for the fields in case they are null
+                  final username = userData?['username'] ?? currentUser.email;
+                  
+      
+                  return ListView(
+                    children: [
+                      const SizedBox(height: 35),
+                      // Profile pic
+                      const Icon(
+                        Icons.person,
+                        size: 80,
+                        color: Colors.orange,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      // User email
+                      Text(
+                        currentUser.email ?? 'Email not available',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.orange),
+                      ),
+                      // User details
+                      const SizedBox(
+                        height: 20,
+                      ),
+      
+                      const Padding(
+                        padding: EdgeInsets.only(left: 25.0),
+                        child: Text(
+                          'My Details',
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                      ),
+                      // Username
+                      MyTextBox(
+                        text: username,
+                        sectionName: 'Username',
+                        onPressed: () => editField('username'),
+                      ),
+                      // Role
+                            MyButton(
+  buttonText: "Map",
+  buttonTapped: () {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MapPage(), // Replace 'MapPage()' with your desired destination page
       ),
+    );
+  },
+)
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error ${snapshot.error}'),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+            
+    
+          ],
+        ),
+      ),
+      
+      
     );
   }
 }

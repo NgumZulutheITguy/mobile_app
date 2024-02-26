@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class HistoryTile extends StatefulWidget {
   final String text;
   final String sectionName;
-  final void Function()? onPressed;
+  final void Function()? onTap;
 
   const HistoryTile(
       {super.key,
       j,
       required this.text,
       required this.sectionName,
-      this.onPressed});
+      this.onTap,});
 
   @override
   State<HistoryTile> createState() => _HistoryTileState();
@@ -39,9 +39,15 @@ class _HistoryTileState extends State<HistoryTile> {
               ),
 
 //edit button
-              IconButton(onPressed: widget.onPressed, icon: const Icon(Icons.delete))
-            ],
-          ),
+             InkWell(
+                  onTap: widget.onTap,
+                  child: Icon(
+                    Icons.delete,
+                   // Change the color as needed
+                  ),
+                ),
+              ],
+            ),
 
 // text
           Text(widget.text),

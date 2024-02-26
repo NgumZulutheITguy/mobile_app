@@ -66,9 +66,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             hintText: 'Email',
             obscureText: false,
           ),
-
+// add  extra validation for the onclick
           MaterialButton(
-            onPressed: passwordReset,
+            onPressed:
+             passwordReset,
             child: const Text('RESET PASSWORD'),
           )
         ],

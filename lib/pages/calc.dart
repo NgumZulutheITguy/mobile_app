@@ -158,7 +158,7 @@ class _CalculatorPage extends State<CalculatorPage> {
     }
     return false;
   }
-
+// add try and catch
   void equalPressed() {
     String finalQuestion = userQuestion;
     finalQuestion = finalQuestion.replaceAll('x', '*');

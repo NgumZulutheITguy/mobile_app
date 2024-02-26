@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MyButton extends StatelessWidget {
+class MyButton1 extends StatelessWidget {
   final Function()? onTap;
   // ignore: prefer_typing_uninitialized_variables
   final buttonText;
 
-  const MyButton({
+  const MyButton1({
     super.key,
     required this.onTap,
     required this.buttonText,

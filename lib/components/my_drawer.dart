@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:mobile_app/components/mapPage.dart';
 import 'package:mobile_app/components/my_list_tile.dart';
-import 'package:mobile_app/pages/profile_page.dart';
+import 'package:mobile_app/pages/profilePage.dart';
+
 import '../pages/generateBarcode.dart';
 import '../pages/calc.dart';
 import '../pages/history_page.dart';
@@ -42,7 +45,7 @@ class MyDrawer extends StatelessWidget {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return const ProfilePage();
+                              return  ProfilePage(onTap: () {  },);
                             },
                           ),
                         );
@@ -100,6 +103,7 @@ class MyDrawer extends StatelessWidget {
                 text: 'L O G O U T',
                 onTap: () {
                   FirebaseAuth.instance.signOut();
+                  Fluttertoast.showToast(msg: "You are now logged out");
                 },
               ),
             )

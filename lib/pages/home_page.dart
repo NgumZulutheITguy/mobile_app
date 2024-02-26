@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-// Add this line to import Firebase Core
-import 'package:cloud_firestore/cloud_firestore.dart'; // Add this line to import Firestore
-import 'package:shared_preferences/shared_preferences.dart';
+
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile_app/components/my_button.dart';
 import '../components/my_drawer.dart';
 
@@ -18,105 +18,133 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final user = FirebaseAuth.instance.currentUser!;
+    final user = FirebaseAuth.instance.currentUser!;
+  String _scanBarcode = ''; // Initialize as an empty string
 
-  String _scanBarcode = '';
+  
 
   @override
   void initState() {
     super.initState();
   }
 
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#fc7f03', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) => print(barcode));
+ Future<void> scanBarcodeNormal() async {
+  String barcodeScanRes;
+  try {
+    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+      '#fc7f03',
+      'Cancel',
+      true,
+      ScanMode.BARCODE,
+    );
+    debugPrint(barcodeScanRes);
+  } on PlatformException {
+    barcodeScanRes = 'Failed to get platform version.';
   }
+  if (!mounted) return;
 
-  // Method to save the scanned barcode result to Firestore
-  Future<void> saveBarcodeToFirestore(String barcode) async {
-    String uid = FirebaseAuth.instance.currentUser!
-        .uid; // Get the current user's UID from Firebase Auth
-    CollectionReference barcodeCollection =
-        FirebaseFirestore.instance.collection('barcodes');
+  setState(() {
+    _scanBarcode = barcodeScanRes;
+  });
 
-    try {
-      await barcodeCollection.doc(uid).set({
-        'barcode_data': barcode,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      print('Barcode data saved to Firestore!');
-    } catch (e) {
-      print('Error saving barcode data: $e');
-    }
+  // Check the scanned barcode in Firebase
+  if (_scanBarcode.isNotEmpty) {
+    checkBarcodeInFirebase(_scanBarcode);
+    // You can also save the scanned barcode to shared preferences here if needed.
   }
+}
 
-  // Modify the scanBarcodeNormal method to save the scanned barcode to Firestore
-  Future<void> scanBarcodeNormal() async {
-    String barcodeScanRes;
-    try {
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        '#fc7f03',
-        'Cancel',
-        true,
-        ScanMode.BARCODE,
-      );
-      debugPrint(barcodeScanRes);
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _scanBarcode = barcodeScanRes;
-    });
-
-    // Save the scanned barcode to shared preferences
-    if (_scanBarcode.isNotEmpty) {
-      saveBarcodeToSharedPreferences(_scanBarcode);
-
-      // Save the scanned barcode to Firestore
-      saveBarcodeToFirestore(_scanBarcode);
-    }
-  }
 
   // Method to save the scanned barcode result to shared preferences
-  Future<void> saveBarcodeToSharedPreferences(String barcode) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('barcode_data', barcode);
-  }
+Future<void> checkBarcodeInFirebase(String barcode) async {
+  
+  try {
+// Replace 'your_collection' and 'barcode_field' with your Firestore collection and field names.
+  final CollectionReference barcodesCollection =
+      FirebaseFirestore.instance.collection('barcodes');
 
+
+    final QuerySnapshot barcodeSnapshot = await barcodesCollection
+        .where('data', isEqualTo: barcode)
+        .get();
+
+    if (barcodeSnapshot.docs.isNotEmpty) {
+      // Barcode exists in Firebase database.
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Barcode Found'),
+            content: Text("The item: '$barcode' was found in the database."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Barcode not found in Firebase database.
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Barcode Not Found'),
+            content: Text("The barcode: '$barcode' was not found in the database.\n"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  } catch (e) {
+    print('Error checking barcode: $e');
+  }
+}
+
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            user.email!,
-            style: TextStyle(color: Colors.orange[500]),
-          ),
-          backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: Text(
+          user.email!,
+          style: TextStyle(color: Colors.orange[500]),
         ),
-        drawer: const MyDrawer(),
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyButton(
-                onTap: scanBarcodeNormal,
-                buttonText: 'Scan Barcode',
-              ),
-              const SizedBox(height: 16),
-              MyButton(
-                onTap: startBarcodeScanStream,
-                buttonText: 'Barcode Scan stream',
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Scan result : $_scanBarcode\n',
-              ),
-             
-            ],
-          ),
-        ));
+        backgroundColor: Colors.black,
+      ),
+      drawer: const MyDrawer(),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Scan barcode below\n by pressing the\n scan button",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 25,
+              //fontStyle: Bold,
+            ),
+            
+            ),
+            SizedBox(height: 45,),
+            MyButton1(
+              onTap: scanBarcodeNormal,
+              buttonText: 'Scan Barcode',
+            ),
+            
+            const SizedBox(height: 30),
+            Text(
+              'last scanned result: $_scanBarcode\n',
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
