@@ -43,7 +43,7 @@ class _HistoryTileState extends State<HistoryTile> {
                   onTap: widget.onTap,
                   child: Icon(
                     Icons.delete,
-                   // Change the color as needed
+                   
                   ),
                 ),
               ],

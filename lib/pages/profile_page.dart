@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
   buttonTapped: () {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => MapPage(), // Replace 'MapPage()' with your desired destination page
+        builder: (context) => MapPage(), 
       ),
     );
   },

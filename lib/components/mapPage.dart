@@ -38,7 +38,7 @@ class _MapPageState extends State<MapPage> {
       markerId: MarkerId('2'),
       position: LatLng(-29.852500, 31.003611),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure), 
-      // Set the custom marker icon
+      
       infoWindow: InfoWindow(
           title: 'Contra 2',
           snippet: 'Sub  warehouse',
@@ -49,7 +49,7 @@ class _MapPageState extends State<MapPage> {
       markerId: MarkerId('3'),
       position: LatLng(-29.849444, 31.010833),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure), 
-      // Set the custom marker icon
+      
       infoWindow: InfoWindow(
           title: 'Contra 3',
           snippet: 'Sub  warehouse',
@@ -72,7 +72,7 @@ class _MapPageState extends State<MapPage> {
                 CameraPosition(target: LatLng(-29.851389, 31.007222), zoom: 11),
 
             myLocationEnabled: true, // Enable the My Location button
-            myLocationButtonEnabled: true, // Show the My Location button
+            myLocationButtonEnabled: true, 
 
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -80,12 +80,12 @@ class _MapPageState extends State<MapPage> {
             markers: markers,
           )),
           Positioned(
-            top: 20.0, // Adjust the top value to position the button vertically
+            top: 20.0, 
             right:
-                20.0, // Adjust the right value to position the button horizontally
+                20.0,
             child: FloatingActionButton(
               backgroundColor: Colors.black,
-              onPressed: _changeMapType, // Call the function to change map type
+              onPressed: _changeMapType, 
               child: Icon(Icons.map, size: 30.0),
             ),
           ),

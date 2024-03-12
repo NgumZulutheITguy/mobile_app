@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class MyButton1 extends StatelessWidget {
   final Function()? onTap;
-  // ignore: prefer_typing_uninitialized_variables
   final buttonText;
 
   const MyButton1({

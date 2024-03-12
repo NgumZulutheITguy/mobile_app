@@ -16,7 +16,7 @@ class GenerateBarcodePage extends StatefulWidget {
 class _GenerateBarcodePageState extends State<GenerateBarcodePage> {
   final generateController = TextEditingController();
   final priceController = TextEditingController();
-  String barcodeData = ""; // Initial barcode data
+  String barcodeData = "";
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _GenerateBarcodePageState extends State<GenerateBarcodePage> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed
+   
     generateController.dispose();
     super.dispose();
   }
@@ -60,7 +60,7 @@ class _GenerateBarcodePageState extends State<GenerateBarcodePage> {
                   borderRadius: BorderRadius.circular(10),
                   child: BarcodeWidget(
                     barcode: Barcode.code128(),
-                    data: barcodeData, // Use the barcodeData variable
+                    data: barcodeData, 
                     drawText: false,
                     width: double.maxFinite,
                     height: 200,
@@ -112,10 +112,7 @@ class _GenerateBarcodePageState extends State<GenerateBarcodePage> {
           ),
               );
         //show for the user
-              } else {
-          // Handle the case where the user is not authenticated
-          print('User is not authenticated');
-              }
+              } 
             } catch (error) {
               // Display an error message using AlertDialog
               showDialog(
@@ -128,7 +125,7 @@ class _GenerateBarcodePageState extends State<GenerateBarcodePage> {
                 TextButton(
                   child: const Text('OK'),
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

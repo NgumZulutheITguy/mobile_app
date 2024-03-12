@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart'; // For date and time formatting
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -51,7 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
           stream: FirebaseFirestore.instance
               .collection('barcodes')
               .where('userId',
-                  isEqualTo: user?.uid) // Filter documents by user ID
+                  isEqualTo: user?.uid) 
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {

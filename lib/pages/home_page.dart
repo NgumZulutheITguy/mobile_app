@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
     final user = FirebaseAuth.instance.currentUser!;
-  String _scanBarcode = ''; // Initialize as an empty string
+  String _scanBarcode = '';
 
   
 
@@ -50,16 +50,16 @@ class _HomePageState extends State<HomePage> {
   // Check the scanned barcode in Firebase
   if (_scanBarcode.isNotEmpty) {
     checkBarcodeInFirebase(_scanBarcode);
-    // You can also save the scanned barcode to shared preferences here if needed.
+   
   }
 }
 
 
-  // Method to save the scanned barcode result to shared preferences
+  
 Future<void> checkBarcodeInFirebase(String barcode) async {
   
   try {
-// Replace 'your_collection' and 'barcode_field' with your Firestore collection and field names.
+
   final CollectionReference barcodesCollection =
       FirebaseFirestore.instance.collection('barcodes');
 
@@ -69,7 +69,7 @@ Future<void> checkBarcodeInFirebase(String barcode) async {
         .get();
 
     if (barcodeSnapshot.docs.isNotEmpty) {
-      // Barcode exists in Firebase database.
+    
       showDialog(
         context: context,
         builder: (context) {
@@ -86,7 +86,7 @@ Future<void> checkBarcodeInFirebase(String barcode) async {
         },
       );
     } else {
-      // Barcode not found in Firebase database.
+      
       showDialog(
         context: context,
         builder: (context) {
